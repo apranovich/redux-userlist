@@ -15,7 +15,7 @@ class UserDetails extends Component {
   imgLoaded(){
     this.setState({loaded: true});
   }
-
+  
   render(){
     const user = this.props.currentUser;
 
@@ -25,9 +25,9 @@ class UserDetails extends Component {
 
     return (
       <div>
-        <img width="400" height="600" 
-          src={this.props.currentUser.photo} 
-          alt={this.props.currentUser.lastname}
+        {!this.state.loaded ? <h3>Loading photo...</h3> : ''}
+        <img src={this.props.currentUser.picture.large} 
+          alt={this.props.currentUser.name.last}
           onLoad={this.imgLoaded} />
       </div>
     );
@@ -39,6 +39,5 @@ function mapStateToProps(state){
     currentUser: state.currentUser
   }
 }
-
 
 export default connect(mapStateToProps)(UserDetails);

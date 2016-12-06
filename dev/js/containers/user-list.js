@@ -1,23 +1,36 @@
 import React, {Component} from 'react';
-import {bindActionCreators} from 'redux'
 import {connect} from 'react-redux';
-import {selectUser} from '../actions/index';
+import {selectUser,fetchUsers} from '../actions/index';
 
 class UserList extends Component {
   
-  userClicked(user){
-    this.props.selectUser(user);
+  constructor(props){
+    super(props);
+  }
+
+  componentDidMount(){
+    this.props.dispatch(fetchUsers('https://randomuser.me/api/?results=10'));
   }
 
   renderUsers(){
-    return this.props.users.map( (user) => (
-      <li key={user.id} onClick={() => this.userClicked(user)}>
-        {user.firstname} {user.lastname}
+    return this.props.users.map( (user, index) => (
+      <li key={index} onClick={() => this.userClicked(user)}>
+        {user.name.first} {user.name.last}
       </li>
     ));
   }
+
+  userClicked(user){
+    this.props.dispatch(selectUser(user));
+  }
   
   render(){
+    if(!this.props.users.length){
+      return (
+        <p>Fetching users...</p>
+      );
+    }
+
     return (
       <ul>
         {this.renderUsers()}
@@ -32,8 +45,5 @@ function mapStateToProps(state){
   }
 }
 
-function mapActionsToProps(dispatch){
-  return bindActionCreators({selectUser}, dispatch);
-}
 
-export default connect(mapStateToProps, mapActionsToProps)(UserList);
+export default connect(mapStateToProps)(UserList);
